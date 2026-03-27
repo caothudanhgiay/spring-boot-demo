@@ -1,0 +1,22 @@
+HELP.md
+build/
+!build/libs/*.jar
+.gradle/
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Log files
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Secrets and environment variables
+.env
+application-*.properties

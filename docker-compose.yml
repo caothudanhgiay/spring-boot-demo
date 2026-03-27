@@ -1,0 +1,29 @@
+services:
+  # Service 1: Đóng vai trò Server Socket
+  my-java-server: # container cua server
+    build: . #tim file Dockerfile o muc hien tai
+    container_name: java-socket-server # ten cua container
+    # Chạy class Server sau khi container khởi động
+    command: java -cp out com.example.demo.socket.DMServerSocket #run file DMServerSocket trong project
+    ports: #ben trai la may that, ben phai la cua container
+      - "8088:8088"
+    networks: # chi dinh server tham gia mang socket-network
+      - socket-network
+
+  # Service 2: Đóng vai trò Client Socket
+  my-java-client: # container cua client
+    build: . #tim file Dockerfile o muc hien tai
+    container_name: java-socket-client # ten cua container
+    # Chạy class Client. Quan trọng: Truyền biến môi trường tên server vào
+    environment:
+      - SERVER_HOST=my-java-server #server là container my-java-server
+    # Chạy class Client
+    command: java -cp out com.example.demo.socket.DMClientSocket #run file DMClientSocket trong project
+    depends_on: #ưu tiên chạy trước
+      - my-java-server # Đảm bảo server chạy trước
+    networks: # nằm trong mang socket-network
+      - socket-network
+
+networks: # mang socket
+  socket-network: # ten mang
+    driver: bridge # mạng nội bộ
