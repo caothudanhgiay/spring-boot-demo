@@ -12,9 +12,6 @@ COPY settings.gradle .
 # Make gradlew executable
 RUN chmod +x ./gradlew
 
-# Download dependencies first to leverage Docker cache.
-RUN ./gradlew dependencies --no-daemon
-
 # Copy the source code
 COPY src ./src
 
