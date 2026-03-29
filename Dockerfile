@@ -1,14 +1,29 @@
-# Stage 1: Build the application using Gradle
-#     docker build -t spring-boot-demo .
-FROM gradle:9.3.1-jdk17-alpine AS build
-WORKDIR /home/gradle/src
-COPY build.gradle settings.gradle ./
+# Stage 1: Build the application using the Gradle Wrapper
+# This ensures the exact Gradle version from the project is used
+FROM eclipse-temurin:17-jdk-alpine AS build
+WORKDIR /workspace/app
+
+# Copy the Gradle wrapper and build files
+COPY gradlew .
+COPY gradle ./gradle
+COPY build.gradle .
+COPY settings.gradle .
+
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
+# Download dependencies first to leverage Docker cache.
+# This is a best practice for faster subsequent builds.
+RUN ./gradlew dependencies --no-daemon
+
+# Copy the source code
 COPY src ./src
-RUN gradle build --no-daemon
+
+# Build the application
+RUN ./gradlew build --no-daemon
 
 # Stage 2: Create the final, smaller image to run the application
-#     docker run -p 8080:8080 spring-boot-demo
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+COPY --from=build /workspace/app/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
