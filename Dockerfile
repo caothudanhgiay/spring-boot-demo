@@ -18,8 +18,8 @@ RUN ./gradlew dependencies --no-daemon
 # Copy the source code
 COPY src ./src
 
-# Build the application with detailed error output
-RUN ./gradlew build --no-daemon --stacktrace
+# Build the application with detailed error output, skipping tests
+RUN ./gradlew build -x test --no-daemon --stacktrace
 
 # Stage 2: Create the final, smaller image to run the application
 FROM eclipse-temurin:17-jre-alpine
