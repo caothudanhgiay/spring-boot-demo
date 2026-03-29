@@ -13,14 +13,13 @@ COPY settings.gradle .
 RUN chmod +x ./gradlew
 
 # Download dependencies first to leverage Docker cache.
-# This is a best practice for faster subsequent builds.
 RUN ./gradlew dependencies --no-daemon
 
 # Copy the source code
 COPY src ./src
 
-# Build the application
-RUN ./gradlew build --no-daemon
+# Build the application with detailed error output
+RUN ./gradlew build --no-daemon --stacktrace
 
 # Stage 2: Create the final, smaller image to run the application
 FROM eclipse-temurin:17-jre-alpine
