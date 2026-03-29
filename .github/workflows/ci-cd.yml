@@ -15,6 +15,11 @@ jobs:
     # Môi trường để chạy job, "ubuntu-latest" là lựa chọn tiêu chuẩn
     runs-on: ubuntu-latest
 
+    # Quyền cần thiết để GITHUB_TOKEN đẩy package lên GitHub Container Registry
+    permissions:
+      contents: read
+      packages: write
+
     # Các bước thực thi tuần tự
     steps:
       # Bước 1: Checkout code từ repository về máy ảo thực thi
