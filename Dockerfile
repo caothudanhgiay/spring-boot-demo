@@ -1,11 +1,14 @@
-# Sử dụng OpenJDK image nhẹ (Alpine)
-FROM eclipse-temurin:17-jdk-alpine
-
-# Tạo thư mục làm việc
-WORKDIR /app
-
-# Copy toàn bộ source code vào image
+# Stage 1: Build the application using Gradle
+#     docker build -t spring-boot-demo .
+FROM gradle:9.3.1-jdk17-alpine AS build
+WORKDIR /home/gradle/src
+COPY build.gradle settings.gradle ./
 COPY src ./src
+RUN gradle build --no-daemon
 
-# Biên dịch code Java (bao gồm cả Constant, SocketClient, SocketServer) vào thư mục ./out
-RUN mkdir -p out && javac -d out src/main/java/com/example/demo/Util/*.java src/main/java/com/example/demo/socket/*.java
+# Stage 2: Create the final, smaller image to run the application
+#     docker run -p 8080:8080 spring-boot-demo
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
