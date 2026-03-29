@@ -1,5 +1,6 @@
 HELP.md
 build/
+bin/
 !build/libs/*.jar
 .gradle/
 

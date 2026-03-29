@@ -27,7 +27,7 @@ public class DMSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html").permitAll() // Cho phép truy cập trang chủ và các trang tĩnh
+                        .requestMatchers("/", "/index.html", "/login-success.html", "/login-failure.html").permitAll() // Cho phép truy cập các trang này
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/auth/**").hasAnyRole("USER", "ADMIN")
@@ -37,6 +37,8 @@ public class DMSecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService) // Sử dụng service tùy chỉnh của chúng ta
                         )
+                        .defaultSuccessUrl("/login-success.html") // Chuyển hướng khi thành công
+                        .failureUrl("/login-failure.html") // Chuyển hướng khi thất bại
                 )
                 .httpBasic(withDefaults()); // Kích hoạt HTTP Basic Auth (cho API hoặc user/admin trong memory)
 
