@@ -1,3 +1,13 @@
-/gradlew text eol=lf
+# These files are text and should be normalized (convert CRLF to LF)
+* text=auto
+
+# These files are text and should use LF line endings
+*.sh text eol=lf
+gradlew text eol=lf
+
+# These files are text and should use CRLF line endings
 *.bat text eol=crlf
+
+# These files are binary and should be left alone
 *.jar binary
+*.png binary
