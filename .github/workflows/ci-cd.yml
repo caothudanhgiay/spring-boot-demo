@@ -43,3 +43,32 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+  # Job để triển khai ứng dụng lên máy chủ
+  deploy:
+    # Job này cần chạy sau khi 'build-and-push' hoàn thành
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2 instance
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USERNAME }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          port: 22
+          script: |
+            # Đăng nhập vào GitHub Container Registry bằng Personal Access Token
+            echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # Kéo image mới nhất từ registry
+            docker pull ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+            # Dừng và xóa container cũ nếu nó đang tồn tại
+            docker stop my-java-app || true
+            docker rm my-java-app || true
+
+            # Chạy container mới từ image vừa tải về
+            # Giả sử ứng dụng của bạn chạy trên port 8080 bên trong container
+            docker run -d --name my-java-app -p 8080:8080 ghcr.io/${{ github.repository }}:${{ github.sha }}
