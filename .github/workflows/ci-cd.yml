@@ -69,6 +69,11 @@ jobs:
             docker stop my-java-app || true
             docker rm my-java-app || true
 
-            # Chạy container mới từ image vừa tải về
-            # Giả sử ứng dụng của bạn chạy trên port 8080 bên trong container
-            docker run -d --name my-java-app -p 8080:8080 ghcr.io/${{ github.repository }}:${{ github.sha }}
+            # Chạy container mới với các biến môi trường cho database
+            docker run -d --name my-java-app \
+              -p 8080:8080 \
+              -e SPRING_DATASOURCE_URL=jdbc:mysql://${{ secrets.DB_HOST }}:3306/${{ secrets.DB_NAME }} \
+              -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USER }} \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e SPRING_JPA_HIBERNATE_DDL_AUTO=update \
+              ghcr.io/${{ github.repository }}:${{ github.sha }}
