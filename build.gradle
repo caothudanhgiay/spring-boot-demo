@@ -30,15 +30,30 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp' // Cho RabbitMQ
+    implementation 'org.springframework.kafka:spring-kafka' // cho kafka
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // cho redis
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+compileJava {
+    options.compilerArgs << "-parameters"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    testLogging {
+        // Luôn hiển thị System.out và System.err trong console khi chạy test
+        showStandardStreams = true
+        // Hiển thị các sự kiện test (vượt qua, bỏ qua, thất bại)
+        events "passed", "skipped", "failed"
+    }
 }
