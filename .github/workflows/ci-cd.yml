@@ -44,7 +44,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
-  # Job để triển khai ứng dụng lên máy chủ
+  # Job để triển khai ứng dụng lên máy chủ --
   deploy:
     # Job này cần chạy sau khi 'build-and-push' hoàn thành
     needs: build-and-push
