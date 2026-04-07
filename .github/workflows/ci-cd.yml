@@ -71,7 +71,7 @@ jobs:
 
             # Chạy container mới với các biến môi trường cho database
             docker run -d --name my-java-app \
-              -p 8080:8080 \
+              -p 8081:8080 \
               -e SPRING_DATASOURCE_URL=jdbc:mysql://${{ secrets.DB_HOST }}:3306/${{ secrets.DB_NAME }} \
               -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USER }} \
               -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
