@@ -1,6 +1,6 @@
 # Stage 1: Build the application using the Gradle Wrapper
 # This ensures the exact Gradle version from the project is used
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /workspace/app
 
 # Copy the Gradle wrapper and build files
